@@ -713,11 +713,24 @@ export default class Table {
    * @param {number} column - hovered column
    */
   updateToolboxesPosition(row = this.hoveredRow, column = this.hoveredColumn) {
+    const tc_row = this.table.querySelector('.tc-row');
+    let left = 0;
+    if (tc_row) {
+      const cells = tc_row.querySelectorAll('.tc-cell');
+      cells.forEach((cell, ci) => {
+        if (ci < (column - 1)) {
+          left += cell.offsetWidth;
+        } else if (ci == (column - 1)) {
+          left += (cell.offsetWidth / 2);
+        }
+
+      });
+    }
     if (!this.isColumnMenuShowing) {
       if (column > 0 && column <= this.numberOfColumns) { // not sure this statement is needed. Maybe it should be fixed in getHoveredCell()
         this.toolboxColumn.show(() => {
           return {
-            left: `calc((100% - var(--cell-size)) / (${this.numberOfColumns} * 2) * (1 + (${column} - 1) * 2))`
+            left: left + 'px'
           };
         });
       }
